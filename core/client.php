@@ -39,14 +39,16 @@
 		{
 
 			// génération de la pair de clé RSA
-			$rsa_key 					= crypto_helper::generate_rsa_key();
+			// $rsa_key 					= crypto_helper::generate_rsa_key();
 			
-			// chiffreement de la clé RSA
-			$encrypted_rsa_private_key 	= crypto_helper::symetric_encrypt($rsa_key["private"], $password);
+			// // chiffreement de la clé RSA
+			// $encrypted_rsa_private_key 	= crypto_helper::symetric_encrypt($rsa_key["private"], $password);
 
-			// stockage des données dans les options du wordpress
-			update_option( self::$rsa_public_option_name, $rsa_key["public"] );
-			update_option( self::$rsa_private_option_name, $encrypted_rsa_private_key );
+			// // stockage des données dans les options du wordpress
+			// update_option( self::$rsa_public_option_name, $rsa_key["public"] );
+			// update_option( self::$rsa_private_option_name, $encrypted_rsa_private_key );
+
+			Bucket::init();
 
 		}
 

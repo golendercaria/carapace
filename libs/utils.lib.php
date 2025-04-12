@@ -15,13 +15,33 @@
 		return "";
 
 	}
-	// public static function generate_unique_file_name( string $path ) : void{
 
+	function generate_unique_filename( string $path, string $extension = null ) : string
+	{
+		$name = hash("sha256", uniqid("", true) . random_bytes(64));
+		$file_path = $path . DIRECTORY_SEPARATOR . $name;
+
+		if( $extension != null ){
+			$file_path .= $extension; 
+		}
+
+		if( file_exists($file_path) ) {
+			return generate_unique_filename();
+		} else {
+			return $file_path;
+		}
+	}
+
+	function create_directory( string $path ) : bool
+	{
+		if( $path == "" ){
+			return false;
+		}
+
+		if( !is_dir( $path ) ){
+			return mkdir($path, 0755, true);
+		}else{
+			return true;
+		}
 		
-	// 	// $folder_name 	= substr($sha_mail, 0,2);
-	// 	// $file_name 		= substr($sha_mail, 2, strlen($sha_mail) - 2) . '.' . self::$extension;
-
-	// 	// self::$data_folder_path = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . $folder_name;
-	// 	// self::$data_file_path 	= self::$data_folder_path . DIRECTORY_SEPARATOR . $file_name;
-
-	// }
+	}

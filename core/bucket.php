@@ -4,65 +4,72 @@
 
 	class Bucket{
 
+
 		// variable administrable
-		static private $coffre_path = "";
+		// static private $coffre_path = "";
 
-		static public $coffre_ID 			= "";
+		// static public $coffre_ID 			= "";
 
-		static public $coffre_path_meta_name 	= "carapace_storage_path";
+		static public $vault_path_meta_name 	= "carapace_storage_path";
 		static public $defaut_coffre_path 		= "./SECUREDATA";
 
-		static public function load_client( array $client_information ) : bool
+		static public $current_bucket_path		= "";
+
+
+		public static function init()
+		{
+			self::construct_vault();
+		}
+
+
+		/*
+		 * Fonction qui permet d'obtenir l'emplacement du coffre fort
+		*/
+		public static function get_vault_path() : string
+		{
+			return get_option( self::$vault_path_meta_name );
+		}
+
+
+		/*
+		 * Construction du coffre fort de base
+		*/
+		static private function construct_vault() : void{
+
+			$vault_path = self::get_vault_path();
+
+			if( create_directory($vault_path) == false ){
+				// error vault construction
+			}
+
+		}
+
+
+		static public function prepare_bucket() : bool
 		{
 
-			if( 
-				!isset($client_information["email"]) 
-				// + email condition
-			)
+			if( self::create_bucket() )
 			{
-				return false;
+				return true;
 			}
 
-			$secret = $client_information["secret"] ?? "";
+			// gestion d'erreur
 
-			return self::load_coffre_ID( $client_information["email"], $secret );
-
-		}
-
-		static private function load_coffre_ID( string $email, string $secret = "" ) : bool {
-			
-			self::$coffre_ID = get_sha_string( $secret . $email );
-			
-			if( self::$coffre_ID == "" ){
-				return false;
-			}
-
-			// emplacement du coffre client
-			if( self::$coffre_path == "" ){
-				self::$coffre_path = self::$defaut_coffre_path;
-			}
-
-			self::$coffre_path .= DIRECTORY_SEPARATOR . self::$coffre_ID;
-
-			self::construct_coffre_folder();
-			
-			return true;
-			
-
+			return false;
 		}
 
 
-		static private function construct_coffre_folder() : bool{
-
-			if( !is_dir( self::$coffre_path ) ){
-				if ( mkdir(self::$coffre_path, 0755, true) ) {
-					return true;
-				}else{
-					die("une erreur lors de la création du coffre");
-				}
-			}else{
-				return true; // coffre exist
+		static private function create_bucket() : bool {
+			
+			$filename = generate_unique_filename( self::get_vault_path() );
+			
+			if( create_directory( $filename ) ){
+				self::$current_bucket_path = $filename;
+				return true;
 			}
+ 
+			return false;
+
 		}
 
 	}

@@ -39,9 +39,9 @@ function mon_plugin_page_options() {
 	}
 
 	// Enregistrer les options
-	if ( isset( $_POST[ Carapace\Bucket::$coffre_path_meta_name ] ) ) 
+	if ( isset( $_POST[ Carapace\Bucket::$vault_path_meta_name ] ) ) 
 	{
-		update_option( Carapace\Bucket::$coffre_path_meta_name , sanitize_text_field( $_POST[ Carapace\Bucket::$coffre_path_meta_name ] ) );
+		update_option( Carapace\Bucket::$vault_path_meta_name , sanitize_text_field( $_POST[ Carapace\Bucket::$vault_path_meta_name ] ) );
 		echo '<div class="updated"><p>Les paramètres ont été sauvegardés !</p></div>';
 	}
 
@@ -61,8 +61,8 @@ function mon_plugin_page_options() {
 				<tr>
 					<th scope="row"><label for="mon_plugin_message">Chemin de stockage</label></th>
 					<td>
-						<input type="text" name="<?php echo Carapace\Bucket::$coffre_path_meta_name; ?>" id="mon_plugin_message" 
-							value="<?php echo esc_attr( get_option( Carapace\Bucket::$coffre_path_meta_name, Carapace\Bucket::$defaut_coffre_path ) ); ?>" 
+						<input type="text" name="<?php echo Carapace\Bucket::$vault_path_meta_name; ?>" id="mon_plugin_message" 
+							value="<?php echo esc_attr( get_option( Carapace\Bucket::$vault_path_meta_name, Carapace\Bucket::$defaut_coffre_path ) ); ?>" 
 							class="regular-text" />
 					</td>
 				</tr>
@@ -91,13 +91,26 @@ function mon_plugin_page_options() {
 		</form>
 
 		<h1>Debug</h1>
+
 		<div>
 			<h2>clé publique :</h2>
 			<textarea cols="50" rows="10"><?php echo get_option( Carapace\Client::$rsa_public_option_name ); ?></textarea>
 
 			<h2>clé privé crypté :</h2>
 			<textarea cols="50" rows="10"><?php echo get_option( Carapace\Client::$rsa_private_option_name ); ?></textarea>
+		
+			<h2>Etat du bucket</h2>
+			<?php
+				$vault_path = Carapace\Bucket::get_vault_path();
+				if( is_dir($vault_path) ){
+					echo "Le vault est créé";
+				}else{
+					echo "Le vault n'existe pas !";
+				}
+			?>
 		</div>
+
+
 	</div>
 	<?php
 }

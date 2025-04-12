@@ -47,7 +47,7 @@
 
 			// Déchiffrer les données
 			return openssl_decrypt($encrypted, $cipher, $key, 0, $iv);
-			
+
 		}
 
 
@@ -122,15 +122,17 @@
 			return in_array($cypher_method,openssl_get_cipher_methods());
 		}
 
-		static function asymetric_encrypt( $content, $path_public_key ){
 
-			$public_key = self::get_key($path_public_key);
+		/*
+		 *
+		 * Fonction de chiffrement asymétrique via RSA
+		 * 
+		*/ 
+		static function asymetric_encrypt( string $content, string $public_rsa_key ) : string
+		{
 
-			//echo $content . "\r\n";
-
-			// Chiffrer le contenu avec la clé publique RSA
 			$encrypted_content = '';
-			if (!openssl_public_encrypt($content, $encrypted_content, $public_key)) {
+			if (!openssl_public_encrypt($content, $encrypted_content, $public_rsa_key)) {
 				$openssl_error = openssl_error_string();
 				throw new \Exception("Erreur lors du chiffrement avec la clé publique.".$openssl_error);
 			}
@@ -188,6 +190,12 @@
 
 			return $key;
 
+		}
+
+
+		public static function get_sha_mail( string $email ) : string
+		{
+			return hash('sha256', $email);
 		}
 
 	}
