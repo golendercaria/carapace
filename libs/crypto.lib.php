@@ -15,7 +15,7 @@
 		 * Exemple crypto_helper::symetric_encrypt("mon message", "ma clé de 16 ou 32 octets");
 		 * 
 		*/
-		static function symetric_encrypt( string $message_need_to_be_encrypt, string $key ) 
+		public static function symetric_encrypt( string $message_need_to_be_encrypt, string $key ) 
 		{
 
 			// Génére le vecteur d'initialisation (IV) via le nom du cypher
@@ -36,7 +36,8 @@
 		 * Exemple crypto_helper::symetric_decrypt("mon message", "ma clé de 16 ou 32 octets");
 		 * 
 		*/
-		function symetric_decrypt( string $message_need_to_be_encrypt, string $key ) {
+		public static function symetric_decrypt( string $message_need_to_be_encrypt, string $key ) : string
+		{
 
 			$data = base64_decode($message_need_to_be_encrypt);
 
@@ -46,12 +47,12 @@
 			$encrypted 	= substr($data, $ivlen);
 
 			// Déchiffrer les données
-			return openssl_decrypt($encrypted, $cipher, $key, 0, $iv);
+			return openssl_decrypt($encrypted, self::$symetric_cypher, $key, 0, $iv);
 
 		}
 
 
-		static function symetric_encrypt_hmac( string $message_need_to_be_encrypt = "", array $no_crypted_asymetric_key = [] ) : string{
+		public static function symetric_encrypt_hmac( string $message_need_to_be_encrypt = "", array $no_crypted_asymetric_key = [] ) : string{
 
 			if( self::check_supported_cypher_method( self::$symetric_cypher ) === false ){
 				throw 'error';
@@ -141,9 +142,14 @@
 
 		}
 
-		static function asymetric_decrypt( $crypted_content, $path_private_key ){
 
-			$private_key = self::get_key($path_private_key);
+		/*
+		 *
+		 * Fonction de dechiffrement asymétrique via RSA
+		 * 
+		*/ 
+		static function asymetric_decrypt( string $crypted_content, string $private_key ) : string
+		{
 
 			// Déchiffrer les données
 			$decrypted_data = '';
@@ -155,6 +161,7 @@
 			return $decrypted_data;
 
 		}
+
 
 		static function get_key( $key_path ){
 

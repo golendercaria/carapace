@@ -32,26 +32,41 @@
 			"data" => null,
 			"files"	=> null
 		);
+		private static $no_encrypted_data		= array(
+			"data" => null,
+			"files"	=> null
+		);
 
 		public static $shamail_from_data		= null;
 		public static $data_structure_from_data = null;
+		public static $email					= null;
 
 
-		public static function store( string $title, array $data )
+		public static function store( string|callable $title, array $data, $origin = null )
 		{
 
 			Bucket::prepare_bucket();
 
 			self::prepare_meta_data( $data );
 
-			// génération d'un mot de passe random
-			self::generate_password();
 
 			// préparation des data et convertion sous forme de chaine de caractère
-			$base64_data = self::prepare_data_for_encrypt( $data );
+			if( isset($data["secure"]) && is_array( $data["secure"]) ){
 
-			// chiffrement de la données de manière asymétrique
-			self::encrypt_data( $base64_data );
+				// génération d'un mot de passe random
+				self::generate_password();
+				
+				$base64_data = self::prepare_data_for_encrypt( $data["secure"] );
+
+				// chiffrement de la données de manière symétrique
+				self::encrypt_data( $base64_data );
+
+			}
+
+			// récupération des données non sécurisé
+			if( isset($data["no_secure"]) && is_array( $data["no_secure"]) ){
+				self::prepare_no_secure_data( $data["no_secure"] );
+			}
 
 			// suppression de data
 			$data = null;
@@ -62,19 +77,71 @@
 			// stockage dans le bucket
 			self::save_data();
 
-			DataInterface::register_data( $title );
+			if(is_callable($title)){
+				$title = call_user_func( $title );
+			}
+			
+			DataInterface::register_data( $title, $origin );
+
+		}
+
+
+		private static function prepare_no_secure_data( $data ){
+			$json_data 							= json_encode($data);
+			self::$no_encrypted_data["data"] 	= $json_data;
+		}
+
+
+		/*
+		 * Fonction qui permet de chiffrer une image qui est glissé depuis les uploads de Wordpress
+		 * 
+		 * 
+		*/ 
+		public static function storeImage( $upload )
+		{
+
+			Bucket::prepare_bucket();
+
+			// ouverture du fichier
+			$file_path 		= $upload["file"];
+			$file 			= file_get_contents( $file_path );
+
+			// // génération d'un hash
+			// $sha_file 		= hash('sha256', $file);
+
+			// génération d'un password de chiffrement AES
+			self::generate_password();
+
+			// transformation de l'image en base64
+			$file_to_base64 = base64_encode( $file );
+
+			// chiffrement en AES
+			self::encrypt_data( $file_to_base64 );
+
+			// chiffrement du mot de passe asymétriquement
+			self::encrypt_aes_password();
+
+			//$parent_folder = dirname( $file_path );
+
+			// write encrypted file
+			self::write_encrypted_upload();
+
+			// suppression fichier
+			unlink($file_path);
+
+			return $upload;
 
 		}
 
 
 		private static function prepare_meta_data( array $data ) : void
 		{
-			$email = self::extract_email_from_data( $data );
+			self::$email = self::extract_email_from_data( $data );
 			self::extract_data_struct_from_data( $data );
 
 			// hashé le mail
-			if( $email != "" ){
-				self::$shamail_from_data = crypto_helper::get_sha_mail( $email );
+			if( self::$email != "" ){
+				self::$shamail_from_data = crypto_helper::get_sha_mail( self::$email );
 			}
 
 		}
@@ -127,6 +194,7 @@
 			self::$encrypted_aes_password = crypto_helper::asymetric_encrypt( self::$aes_password, $public_rsa_key );
 		
 			self::$aes_password = null;
+
 		}
 
 
@@ -136,19 +204,49 @@
 		private static function save_data() : void
 		{
 
-			// ecriture des données de base
+			// écriture des données non chiffré
+			file_put_contents( 
+				Bucket::$current_bucket_path . DIRECTORY_SEPARATOR . "no_secure_data.json",
+				self::$no_encrypted_data["data"],
+				LOCK_EX
+			);
+
+
+			// écriture des données chiffré
 			file_put_contents( 
 				Bucket::$current_bucket_path . DIRECTORY_SEPARATOR . "data.txt",
 				self::$encrypted_data["data"],
 				LOCK_EX
 			);
 
-			// ecriture du mot de passe chiffré
+			// écriture du mot de passe chiffré
 			file_put_contents( 
 				Bucket::$current_bucket_path . DIRECTORY_SEPARATOR . "password.txt",
 				self::$encrypted_aes_password,
 				LOCK_EX
 			);
+
+		}
+
+
+
+		private static function write_encrypted_upload() : void
+		{
+
+			// ecriture des données de base
+			file_put_contents( 
+				Bucket::$current_bucket_path . DIRECTORY_SEPARATOR . 'data.txt',
+				self::$encrypted_data["data"],
+				LOCK_EX
+			);
+
+			// ecriture du mot de passe chiffré
+			file_put_contents( 
+				Bucket::$current_bucket_path . DIRECTORY_SEPARATOR . 'password.txt',
+				self::$encrypted_aes_password,
+				LOCK_EX
+			);
+
 
 		}
 
@@ -164,11 +262,11 @@
 			}
 
 			foreach( $data as $key => $value){
-				if( $key === "email" ){
+				//if( $key === "email" ){
 					if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
 						return $value;
 					}
-				}
+				//}
 			}
 
 			return "";
@@ -184,6 +282,97 @@
 		private static function extract_data_struct_from_data( array $data ) : void
 		{
 			self::$data_structure_from_data = array_keys( $data );
+		}
+
+
+		public static function extract_data_from_bucket_path( string $bucket_path ) : string|array{
+
+			$data = array(
+				"no_secure" => array(),
+				"secure" => array()
+			);
+
+			$no_secure_data_file_path 	= $bucket_path . DIRECTORY_SEPARATOR . 'no_secure_data.json';
+			$secure_data_file_path 		= $bucket_path . DIRECTORY_SEPARATOR . 'data.txt';
+			$password_file_path 		= $bucket_path . DIRECTORY_SEPARATOR . 'password.txt';
+
+			// extraction des données non sécurisé
+			if( 
+				file_exists($no_secure_data_file_path)
+			){
+				$data["no_secure"] = file_get_contents($no_secure_data_file_path);
+			}
+
+			// extraction des données sécurisé
+			if( 
+				file_exists($secure_data_file_path)
+			){
+
+				$data["secure"] = file_get_contents($secure_data_file_path);
+				if(
+					// si pas de données de rsa key en session
+					isset($_SESSION["carapace_rsa_key"]) 
+					&& $_SESSION["carapace_rsa_key"] != "" 
+					&& file_exists($password_file_path)
+				){
+
+					// TODO : faire en sorte de bien tester que le déchiffrement à été possible
+					Monitor::tracking_action_on_carapace('Opération de déchiffrement des données du bucket ' . basename($bucket_path));
+	
+					$password 	= file_get_contents($password_file_path);
+
+					// decrypt password
+					$decrypted_password = crypto_helper::asymetric_decrypt( $password, $_SESSION["carapace_rsa_key"]);
+					
+					// decrypted data
+					$decrypted_data = crypto_helper::symetric_decrypt($data["secure"], $decrypted_password);
+
+					$data["secure"] = json_decode( base64_decode($decrypted_data), true );
+				}
+			}
+
+
+			return $data;
+
+
+
+			if( 
+				// si les fichiers n'existe pas
+				!file_exists($data_file_path)
+				&& !file_exists($password_file_path)
+			)
+			{
+				return "Aucune données";
+			}
+			else
+			{
+
+				$data 		= file_get_contents($data_file_path);
+				if(
+					// si pas de données de rsa key en session
+					!isset($_SESSION["carapace_rsa_key"]) 
+					|| $_SESSION["carapace_rsa_key"] == "" 
+				
+				)
+				{
+					return $data;
+				}
+				else
+				{
+					$password 	= file_get_contents($password_file_path);
+
+					// decrypt password
+					$decrypted_password = crypto_helper::asymetric_decrypt( $password, $_SESSION["carapace_rsa_key"]);
+					
+					// decrypted data
+					$decrypted_data = crypto_helper::symetric_decrypt($data, $decrypted_password);
+
+					return json_decode( base64_decode($decrypted_data), true );
+				}
+
+			}
+
+
 		}
 
 	}

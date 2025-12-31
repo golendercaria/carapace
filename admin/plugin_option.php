@@ -3,6 +3,26 @@
 use Carapace\Bucket;
 use Carapace\Client;
 
+wp_enqueue_style(
+	'carapace-admin-style',
+	plugin_dir_url(__FILE__) . 'css/admin.css',
+	array(),
+	'1.0',
+	'all'
+);
+
+wp_enqueue_script(
+	'carapace-admin-js',
+	plugin_dir_url(__FILE__) . 'js/admin.js',
+	array(),
+	'1.0',
+	true
+);
+
+wp_localize_script('carapace-admin-js', 'data_for_js', array(
+	'ajax_URL' => admin_url('admin-ajax.php')
+));
+
 add_action( 'wp_head', 'style_message_plugin' );
 function style_message_plugin() {
     echo '

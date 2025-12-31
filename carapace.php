@@ -21,8 +21,12 @@
 	require_once 'core/bucket.php';
 	require_once 'core/client.php';
 	require_once 'core/storage.php';
+	require_once 'core/monitor.php';
 	require_once 'admin/data_interface.php';
+	require_once 'core/vault.php';
 	require_once 'admin/plugin_option.php';
+
+	require_once 'core/interceptor.php';
 
 	//use Carapace\Bucket;
 
@@ -32,8 +36,12 @@
 		{
 			// interface Wordpress
 			new DataInterface();
+			new Vault();
+			new Monitor();
+			new Interceptor();
 
 			add_action( 'init', array( $this, 'detect_submission' ) );
+
 		}
 
 
@@ -45,7 +53,7 @@
 				return;
 			}
 
-			pre($data);
+			//pre($data);
 
 
 
@@ -58,9 +66,9 @@
 			if( isset($_GET["submission"]) ){
 
 				$data = array(
-					"prenom" 	=> "Sandrine",
-					"nom" 		=> "Hoeffler",
-					"email" 	=> "sandrine.hoeffler@gmail.com"
+					"prenom" 	=> "Kamel",
+					"nom" 		=> "Chicki",
+					"email" 	=> "kamel@gmail.com"
 				);
 
 				Storage::store( "from test URL", $data );
@@ -73,6 +81,5 @@
 
 
 	}
-
 
 	new Carapace();

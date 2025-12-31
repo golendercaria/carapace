@@ -6,21 +6,11 @@
 		exit;
 	}
 
-	use Carapace\Storage;
-
-	class DataInterface{
-
-		private static $current_bucket_ID 		= null;
-
-		public static $data_structure_meta_name = "carapace_bucket_data_structure";
-		public static $data_shamail_meta_name 	= "carapace_bucket_shamail";
-		public static $data_bucket_path			= "carapace_bucket_path";
-
+	class MonitorInterface{
 
 		public function __construct(){
 			
 			add_action( 'init', array($this, 'register_custom_post_type'), 10 );
-			add_action('add_meta_boxes', array( $this, 'meta_box_for_bucket' ) );
 
 		}
 
@@ -28,9 +18,9 @@
 		public function register_custom_post_type() : void
 		{
 			
-			register_post_type( 'bucket', array(
+			register_post_type( 'carapace_tra', array(
 				'labels'              => array(
-					'name'      	=> 'Bucket',
+					'name'      	=> 'Tracy',
 					'singular_name'	=> 'Bucket',
 					'add_new'		=> 'Ajouter un bucket',
 					'add_new_item'	=> 'Ajouter un bucket'
@@ -52,23 +42,10 @@
 				)
 			));
 
-			register_taxonomy(
-				'origin',
-				array('bucket'),
-				array(
-					'label' 			=> "Origine de la sauvegarde",
-					'hierarchical' 		=> true,
-					'show_in_menu' 		=> true,
-					'show_admin_column' => false,
-					'show_in_rest' 		=> true,
-					'show_admin_column' => true
-				)
-			);
-
 		}
 
 
-		public static function register_data( string $title, $origin = null )
+		public static function register_data( string $title )
 		{
 
 			$post_data = array(
@@ -80,11 +57,6 @@
 
 			$post_id = wp_insert_post($post_data);
 
-    // if ( ! is_wp_error($post_id) ) {
-    //     // Ajouter un terme (ou plusieurs) à une taxonomie
-    //     wp_set_object_terms($post_id, 'mon-terme', 'bucket_category');
-    // }
-
 			if( $post_id ){
 				
 				add_post_meta($post_id, self::$data_bucket_path, Bucket::$current_bucket_path );
@@ -92,11 +64,6 @@
 				add_post_meta($post_id, self::$data_shamail_meta_name, Storage::$shamail_from_data );
 
 				//pre( get_post_meta($post_id) );
-
-				if( $origin != null )
-				{
-					wp_set_object_terms( $post_id, $origin, 'origin' );
-				}
 
 			}else{
 
@@ -146,19 +113,15 @@
 			
 			$data = Storage::extract_data_from_bucket_path( $bucket_path );
 
-			if( isset($data["no_secure"]) ){
-				$no_secure_data = json_decode($data["no_secure"], true);
+			if( is_array($data) ){
 				?>
-				<textarea style="width:100%; min-height:150px;"><?php pre($no_secure_data); ?></textarea>
+				<textarea style="width:100%; min-height:150px;"><?php pre( $data ); ?></textarea>
+				<?php
+			}else{
+				?>
+				<textarea style="width:100%; min-height:50px;"><?php echo $data; ?></textarea>
 				<?php
 			}
-
-			if( isset($data["secure"]) ){
-				?>
-				<textarea style="width:100%; min-height:150px;"><?php pre($data["secure"]); ?></textarea>
-				<?php
-			}
-
 		}
 
 
