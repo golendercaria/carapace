@@ -314,9 +314,11 @@
 		 * => peut-être isolé ça dans RGPD plus tard ?
 		 * 
 		*/
-		private static function extract_data_struct_from_data( array $data ) : void
-		{
-			self::$data_structure_from_data = array_keys( $data );
+		private static function extract_data_struct_from_data( array $data ) : void{
+			self::$data_structure_from_data = array(
+				"no_secure" => array_keys($data["no_secure"]),
+				"secure" => array_keys($data["secure"])
+			);
 		}
 
 
@@ -385,8 +387,7 @@
 				// si les fichiers n'existe pas
 				!file_exists($data_file_path)
 				&& !file_exists($password_file_path)
-			)
-			{
+			){
 				return "Aucune données";
 			}
 			else
@@ -398,12 +399,9 @@
 					!isset($_SESSION["carapace_rsa_key"]) 
 					|| $_SESSION["carapace_rsa_key"] == "" 
 				
-				)
-				{
+				){
 					return $data;
-				}
-				else
-				{
+				}else{
 					$password 	= file_get_contents($password_file_path);
 
 					// decrypt password

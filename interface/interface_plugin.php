@@ -18,6 +18,7 @@
 			wp_localize_script('carapace-admin-js', 'carapace_js_data', array(
 				'ajax_URL' => admin_url('admin-ajax.php')
 			));
+			
 		}
 
 		public function add_carapace_menu() {

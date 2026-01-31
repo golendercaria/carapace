@@ -30,9 +30,7 @@
 			register_post_type( 'bucket', array(
 				'labels'              => array(
 					'name'      	=> 'Bucket',
-					'singular_name'	=> 'Bucket',
-					'add_new'		=> 'Ajouter un bucket',
-					'add_new_item'	=> 'Ajouter un bucket'
+					'singular_name'	=> 'Bucket'
 				),
 				'public'              	=> false,
 				'show_ui'             	=> true,
@@ -48,7 +46,11 @@
 				'menu_icon'				=> 'dashicons-database',
 				'supports'            	=> array(
 					'title'
-				)
+				),
+				'capabilities' => array(
+					'create_posts' => 'do_not_allow',
+				),
+				'map_meta_cap' => true,
 			));
 
 			register_taxonomy(
@@ -67,10 +69,7 @@
 		}
 
 
-
-
-		public function meta_box_for_bucket( $screen ) : void
-		{
+		public function meta_box_for_bucket( $screen ) : void{
 
 			if( $screen != "bucket" ){
 				return;
@@ -85,7 +84,7 @@
 
 			// ajout des meta box
 			add_meta_box(
-				'bucket_data',
+				'carapace_bucket_data',
 				'Données principale',
 				array($this, 'display_bucket_data'),
 				$screen
@@ -100,30 +99,57 @@
 		}
 
 
-		public function display_bucket_data() : void
-		{
-			$bucket_path 	= get_post_meta(self::$current_bucket_ID, self::$data_bucket_path, true );
-			
-			$data = Storage::extract_data_from_bucket_path( $bucket_path );
+		public function display_bucket_data() : void{
 
-			if( isset($data["no_secure"]) ){
+			$bucket_path 	= get_post_meta(self::$current_bucket_ID, self::$data_bucket_path, true );
+			$data 			= Storage::extract_data_from_bucket_path( $bucket_path );
+			$data_structure = get_post_meta(self::$current_bucket_ID, self::$data_structure_meta_name, true );
+
+			if( !empty($data_structure["no_secure"]) ){
 				$no_secure_data = json_decode($data["no_secure"], true);
-				?>
-				<textarea style="width:100%; min-height:150px;"><?php pre($no_secure_data); ?></textarea>
-				<?php
+				$this->display_data($data_structure["no_secure"], $no_secure_data);
 			}
 
-			if( isset($data["secure"]) ){
-				?>
-				<textarea style="width:100%; min-height:150px;"><?php pre($data["secure"]); ?></textarea>
-				<?php
+			if( !empty($data_structure["secure"]) ){
+				$this->display_data($data_structure["secure"], $data["secure"]);
 			}
 
 		}
 
 
-		public function display_bucket_meta_data() : void
-		{
+		public function display_data( array $structure, $data ){
+	
+			if( !empty($structure) ){
+				?>
+				<table class="data-group">
+					<?php
+						foreach($structure as $key ){
+
+							if( isset($data[$key]) ){
+								?>
+								<tr>
+									<th><?php echo esc_html( $key ); ?></th>
+									<td><?php echo esc_html( $data[$key] ); ?></td>
+								</tr>
+								<?php
+							}else{
+								?>
+								<tr>
+									<th><?php echo esc_html( $key ); ?></th>
+									<td class="crypted_data">&nbsp;</td>
+								</tr>
+								<?php
+							}
+
+						}
+					?>
+				</table>
+				<?php
+			}
+		}
+
+
+		public function display_bucket_meta_data() : void{
 
 			$bucket_path 	= get_post_meta(self::$current_bucket_ID, self::$data_bucket_path, true );
 			$data_structure = get_post_meta(self::$current_bucket_ID, self::$data_structure_meta_name, true );

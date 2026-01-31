@@ -19,11 +19,6 @@
 		}
 
 
-
-
-
-
-
 		static public function prepare_bucket() : bool{
 
 			if( self::create_bucket() ){

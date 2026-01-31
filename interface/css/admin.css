@@ -51,6 +51,17 @@
 	display: block;
 }
 
+
+#carapace_bucket_data .crypted_data{
+	background: black;
+	color: black;
+	width: 150px;
+	height: 20px;
+}
+
+
+
+
 #carapace_wrapper{
 
 }

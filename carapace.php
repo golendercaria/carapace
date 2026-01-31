@@ -34,11 +34,8 @@
 	require_once 'core/interceptor.php';
 	require_once 'interface/interface_plugin.php';
 
-	//use Carapace\Bucket;
-	
+
 	class Carapace{
-		
-		
 
 		public function __construct(){
 
@@ -68,21 +65,6 @@
 
 		}
 
-
-
 	}
 
 	new Carapace();
-
-
-
-/*
-
-		
-			// new DataInterface();
-			// new Vault();
-			// new Monitor();
-			// new Interceptor();
-
-			// add_action( 'init', array( $this, 'detect_submission' ) );
-			*/

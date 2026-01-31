@@ -32,8 +32,7 @@
 		}
 	}
 
-	function create_directory( string $path ) : bool
-	{
+	function create_directory( string $path ) : bool{
 		if( $path == "" ){
 			return false;
 		}
@@ -44,4 +43,20 @@
 			return true;
 		}
 		
+	}
+
+
+	function carapace_display_sec_for_human($secondes) {
+		if ($secondes < 60) {
+			return "$secondes secondes";
+		} elseif ($secondes < 3600) {
+			$minutes = floor($secondes / 60);
+			return "$minutes min";
+		} elseif ($secondes < 86400) {
+			$heures = floor($secondes / 3600);
+			return "$heures h";
+		} else {
+			$jours = floor($secondes / 86400);
+			return "$jours jour" . ($jours > 1 ? 's' : '');
+		}
 	}
