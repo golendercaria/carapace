@@ -16,70 +16,47 @@
 		exit;
 	}
 
+	define('CARAPACE_PLUGIN_PATH', __DIR__);
+
 	require_once 'libs/utils.lib.php';
+	require_once 'core/vault.php';
+	/*
 	require_once 'libs/crypto.lib.php';
 	require_once 'core/bucket.php';
 	require_once 'core/client.php';
 	require_once 'core/storage.php';
 	require_once 'core/monitor.php';
 	require_once 'admin/data_interface.php';
-	require_once 'core/vault.php';
 	require_once 'admin/plugin_option.php';
 
 	require_once 'core/interceptor.php';
+	*/
+	require_once 'interface/interface_plugin.php';
 
 	//use Carapace\Bucket;
-
+	
 	class Carapace{
 
-		public function __construct()
-		{
-			// interface Wordpress
-			new DataInterface();
+		public function __construct(){
+
 			new Vault();
-			new Monitor();
-			new Interceptor();
-
-			add_action( 'init', array( $this, 'detect_submission' ) );
+			new PluginInterface();
 
 		}
-
-
-		private function store_data( array $data )
-		{
-
-			if( !isset($data["email"]) ){
-				die("error email not provided");
-				return;
-			}
-
-			//pre($data);
-
-
-
-		}
-
-
-		public function detect_submission()
-		{
-
-			if( isset($_GET["submission"]) ){
-
-				$data = array(
-					"prenom" 	=> "Kamel",
-					"nom" 		=> "Chicki",
-					"email" 	=> "kamel@gmail.com"
-				);
-
-				Storage::store( "from test URL", $data );
-
-				die("submission");
-			}
-
-		}
-
-
 
 	}
 
 	new Carapace();
+
+
+
+/*
+
+		
+			// new DataInterface();
+			// new Vault();
+			// new Monitor();
+			// new Interceptor();
+
+			// add_action( 'init', array( $this, 'detect_submission' ) );
+			*/

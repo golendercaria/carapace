@@ -7,8 +7,12 @@
 	}
 
 	use Carapace\crypto_helper;
+	
 
 	class Vault{
+
+		private static $password_option_name 	= 'carapace_encrypted_password';
+		public static $carapace_password 		= null;
 
 		public function __construct(){
 
@@ -21,6 +25,25 @@
 			add_action('wp_ajax_carapace_unlock_vault', array( $this, 'unlock_vault_for_session' ) );
 			add_action('wp_ajax_carapace_lock_vault', array( $this, 'lock_vault_for_session' ) );
 
+		}
+
+
+
+		/**
+		 * Obtenir le status de création du coffre fort
+		 */
+		public static function vault_has_initiazed() : bool{
+			$encrypted_vault_password = self::get_encrypted_vault_password();
+			if( $encrypted_vault_password && $encrypted_vault_password !== ""){
+				return true;
+			}else{
+				return false;
+			}
+		}
+
+
+		public static function get_encrypted_vault_password(){
+			return get_option( self::$password_option_name );
 		}
 
 
@@ -51,14 +74,30 @@
 		}
 
 
+		public static function init_carapace(){
+			
+			self::$carapace_password = Client::init_client_password();
+
+			Client::init_client( self::$carapace_password );
+
+		}
+
+
 		public function unlock_vault_for_session()
 		{
 			if (isset($_POST['password']) ) {
 
 				$_SESSION["carapace_client_password"] = $_POST['password'];
 
+				// Kk7yBbHZS20oTZHdZfj9mmA6Ng+OrfWHqMA/VgXW6OQ=
+				// Kk7yBbHZS20oTZHdZfj9mmA6Ng+OrfWHqMA/VgXW6OQ=
+				// pre($_SESSION["carapace_client_password"]);
+				// die();
+
 				// tentative de décryptage de la clé privé
 				$private_crypted_rsa_key 	= get_option( Client::$rsa_private_option_name );
+
+
 
 				$private_rsa_key 			= crypto_helper::symetric_decrypt( $private_crypted_rsa_key, $_SESSION["carapace_client_password"] );
 
