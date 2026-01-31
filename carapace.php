@@ -60,6 +60,8 @@
 				update_option( Vault::$vault_path_meta_name , $vault_path );
 			}
 
+			Monitor::tracking_action_on_carapace('Initialisation de la carapace');
+
 			return true;
 
 		}

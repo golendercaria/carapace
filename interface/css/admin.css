@@ -51,7 +51,67 @@
 	display: block;
 }
 
+#carapace_wrapper{
 
+}
+#carapace_wrapper h2{
+	font-size: 28px;
+	margin-bottom: 10px;
+}
+#carapace_wrapper h3{
+	font-size: 26px;
+}
+
+#carapace_wrapper .center{
+	text-align: center;
+}
+
+#carapace_wrapper .configuration{
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 20px;
+}
+#carapace_wrapper .config textarea{
+	height: 200px;
+	width: 100%;
+}
+#carapace_wrapper .config .config_value{
+	max-width: 600px;
+	width: 100%;
+	background: rgb(255, 237, 240);
+	border: 2px solid rgb(255, 118, 141);
+	padding: 10px;
+	border-radius: 15px;
+	outline: none;
+	box-shadow: none;
+}
+#carapace_wrapper .configuration .for-submit{
+	grid-column: 1 / -1;
+}
+#carapace_wrapper .for-submit{
+	text-decoration: none;
+	background: rgb(255, 237, 240);
+	border: 2px solid rgb(255, 136, 156);
+	color: rgb(255, 91, 118);
+	border-radius: 15px;
+	padding: 20px 30px;
+	display: flex;
+	align-items: center;
+	margin: 60px auto 0 auto;
+	font-size: 20px;
+	font-weight: 600;
+	transition: background 0.3s;
+	cursor: pointer;
+}
+#carapace_wrapper .for-submit:hover{
+	background: rgb(255, 217, 223);
+}
+#carapace_wrapper .for-submit:hover svg{
+	fill: rgb(255, 151, 169);
+}
+#carapace_wrapper .for-submit svg{
+	margin-right: 10px;
+}
 
 #carapace-configuration-form .carapace_error{
 	background: rgb(255, 54, 54);
@@ -63,10 +123,6 @@
 #carapace-configuration-form{
 	margin-top: 50px;
 	max-width: 800px;
-}
-#carapace-configuration-form h2{
-	font-size: 28px;
-	margin-bottom: 10px;
 }
 #carapace-configuration-form .step{
 	margin-top: 30px;
@@ -93,7 +149,6 @@
 }
 #carapace-configuration-form .step h3{
 	margin: 0 0 10px 0;
-	font-size: 26px;
 }
 #carapace-configuration-form .step p{
 	margin: 0;
@@ -185,29 +240,6 @@
 }
 #carapace-configuration-form .step[data-value="3"] label:has(input:checked) p + p{
 	color: white;
-}
-#carapace-configuration-form button.for-submit{
-	background: rgb(255, 237, 240);
-	border: 2px solid rgb(255, 136, 156);
-	color: rgb(255, 91, 118);
-	border-radius: 15px;
-	padding: 20px 30px;
-	display: flex;
-	align-items: center;
-	margin: 60px auto 0 auto;
-	font-size: 20px;
-	font-weight: 600;
-	transition: background 0.3s;
-	cursor: pointer;
-}
-#carapace-configuration-form button.for-submit:hover{
-	background: rgb(255, 217, 223);
-}
-#carapace-configuration-form button.for-submit:hover svg{
-	fill: rgb(255, 151, 169);
-}
-#carapace-configuration-form button.for-submit svg{
-	margin-right: 10px;
 }
 
 

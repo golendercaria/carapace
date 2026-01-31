@@ -49,15 +49,58 @@
 			$this->init_carapace_configuration();
 
 			?>
-			<div class="wrap">
+			<div class="wrap" id="carapace_wrapper">
 
 				<h1>Carapace</h1>
 				<?php
+					if( Vault::vault_has_initiazed() === false || ( isset($_GET["reconfigure"]) && $_GET["reconfigure"] == 'true' ) ){
 						$this->display_carapace_configurator();
-					if( Vault::vault_has_initiazed() === false ){
+					}else{
+						$this->display_carapace_status();
 					}
 				?>
 
+			</div>
+			<?php
+		}
+
+
+		public function display_carapace_status(){
+
+			$link_to_reconfigure = add_query_arg(
+				array(
+					'reconfigure' => 'true'
+				),
+				admin_url('admin.php?page=carapace')
+			);
+
+			?>
+			<h2>Configuration cryptographique</h2>
+			<p>La carapace est initialisé.</p>
+			<div class="configuration">
+				<div class="config">
+					<h3>Emplacement du coffre fort</h3>
+					<input type="text" value="<?php echo Vault::get_vault_path(); ?>" class="config_value" />
+				</div>
+				<div class="config">
+					<h3>Délai de vérouillage automatique du coffre fort</h3>
+					<input type="text" value="<?php echo Vault::get_automatic_lock_vault_delay(); ?>" class="config_value" />
+				</div>
+				<div class="config">
+					<h3>Clé asymétrique</h3>
+					<textarea class="config_value"><?php echo Client::get_public_key(); ?></textarea>
+				</div>
+				<div class="config">
+					<h3>Clé privée chiffré</h3>
+					<textarea class="config_value"><?php echo Client::get_encrypted_private_key(); ?></textarea>
+				</div>
+
+		
+				<a href="<?php echo $link_to_reconfigure; ?>" class="for-submit">
+					<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path></svg>
+					Reconfigurer la Carapace
+				</a>
+	
 			</div>
 			<?php
 		}
