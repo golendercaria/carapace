@@ -11,6 +11,7 @@
 
 		static public $rsa_public_option_name 	= "carapace_client_rsa_public_key";
 		static public $rsa_private_option_name 	= "carapace_client_encrypted_rsa_private_key";
+		static public $password_option_name 	= "carapace_client_encrypted_password";
 
 		/*
 			# activation
@@ -31,31 +32,45 @@
 		*/
 
 
-		static public function init_client( string $password )
-		{
+		static public function init_client( string $password ){
 
 			// génération de la pair de clé RSA
 			$rsa_key 					= crypto_helper::generate_rsa_key();
 			
-			// chiffreement de la clé RSA
+			// chiffrement de la clé RSA
 			$encrypted_rsa_private_key 	= crypto_helper::symetric_encrypt($rsa_key["private"], $password);
 
 			// stockage des données dans les options du wordpress
 			update_option( self::$rsa_public_option_name, $rsa_key["public"] );
 			update_option( self::$rsa_private_option_name, $encrypted_rsa_private_key );
 
-			Bucket::init();
-
 		}
 
 
-		static public function get_private_rsa_key( string $password ){
-
-
-
+		/*
+		 * Récupération de la clé publique du client
+		*/
+		public static function get_public_key(){
+			return get_option( self::$rsa_public_option_name );
 		}
 
 
-		static public function r(){}
+		/*
+		 * Récupération de la clé privée chiffré du client
+		*/
+		public static function get_encrypted_private_key(){
+			return get_option( self::$rsa_private_option_name );
+		}
+
+
+		public static function get_encrypted_vault_password(){
+			return get_option( Client::$password_option_name );
+		}
+
+
+		// public static function init_client_password(){
+		// 	return base64_encode(random_bytes(32));
+		// }
+
 
 	}

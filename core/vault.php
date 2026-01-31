@@ -11,8 +11,11 @@
 
 	class Vault{
 
-		private static $password_option_name 	= 'carapace_encrypted_password';
+		static public $vault_path_meta_name 					= "carapace_storage_path";
+		//private static $password_option_name 					= "carapace_encrypted_password";
+		private static $automatic_lock_vault_delay_option_name 	= "carapace_automatic_lock_vault_delay";
 		public static $carapace_password 		= null;
+		public static $error_on_vault			= null;
 
 		public function __construct(){
 
@@ -28,23 +31,72 @@
 		}
 
 
+		public static function check_is_vault_folder_can_be_create( string $path ){
+		
+			if( file_exists($path) ){
+				self::$error_on_vault = "Impossible de créé le coffre fort à cet emplacement, un fichier sous ce nom existe.";
+				return false;
+			}
+		
+			$parent_directory = dirname($path);
+			if (!is_dir($parent_directory) || !is_writable($parent_directory)) {
+				self::$error_on_vault = "Impossible de créé le coffre fort à l'emplacement défini, droit d'écriture invalide.";
+				return false;
+			}
+
+			return true;
+
+		}
+
+
+		/*
+		 * Fonction qui permet d'obtenir l'emplacement du coffre fort
+		*/
+		public static function get_vault_path() : string{
+			return get_option( self::$vault_path_meta_name );
+		}
+
+
+		/*
+		 * Fonction qui permet d'obtenir l'emplacement du coffre fort
+		*/
+		public static function get_automatic_lock_vault_delay() : int{
+			return get_option( self::$automatic_lock_vault_delay_option_name );
+		}
+
+
+		/*
+		 * Construction du coffre fort de base
+		*/
+		static public function construct_vault( $vault_path, $automatic_lock_vault_delay ) : bool{
+
+			update_option( self::$automatic_lock_vault_delay_option_name, $automatic_lock_vault_delay );
+
+			// TODO make .htaccess for secure folder
+			return create_directory($vault_path);
+		}
+
+
+
 
 		/**
 		 * Obtenir le status de création du coffre fort
 		 */
 		public static function vault_has_initiazed() : bool{
-			$encrypted_vault_password = self::get_encrypted_vault_password();
-			if( $encrypted_vault_password && $encrypted_vault_password !== ""){
-				return true;
-			}else{
-				return false;
-			}
+
+			return ( 
+				Client::get_public_key() != ""
+				&& Client::get_encrypted_private_key() != ""
+				&& Vault::get_vault_path() != ""
+				&& Vault::get_automatic_lock_vault_delay() != ""
+			);
+
 		}
 
 
-		public static function get_encrypted_vault_password(){
-			return get_option( self::$password_option_name );
-		}
+		// public static function get_encrypted_vault_password(){
+		// 	return get_option( self::$password_option_name );
+		// }
 
 
 		public function status_lock_vault_on_admin_bar() : void
@@ -74,13 +126,13 @@
 		}
 
 
-		public static function init_carapace(){
+		// public static function init_carapace(){
 			
-			self::$carapace_password = Client::init_client_password();
+		// 	self::$carapace_password = Client::init_client_password();
 
-			Client::init_client( self::$carapace_password );
+		// 	Client::init_client( self::$carapace_password );
 
-		}
+		// }
 
 
 		public function unlock_vault_for_session()
