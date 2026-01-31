@@ -2,11 +2,11 @@
 
 	/*
 	Plugin Name: Carapace
-	Plugin URI: https://binsfeld.lu
+	Plugin URI: https://plugins.nouslesdevs.com
 	Description: Un plugin générique de secu pour wordpress
 	Version: 1.0
 	Author: Votre Nom
-	Author URI: http://votre-site.com
+	Author URI: https://nouslesdevs.com
 	License: GPL2
 	*/
 
@@ -23,15 +23,15 @@
 	require_once 'core/vault.php';
 	require_once 'core/client.php';
 	require_once 'core/monitor.php';
+	require_once 'core/storage.php';
+	require_once 'core/bucket.php';
+	require_once 'admin/data_interface.php';
 	
 	/*
-	require_once 'core/bucket.php';
-	require_once 'core/storage.php';
-	require_once 'admin/data_interface.php';
 	require_once 'admin/plugin_option.php';
 
-	require_once 'core/interceptor.php';
 	*/
+	require_once 'core/interceptor.php';
 	require_once 'interface/interface_plugin.php';
 
 	//use Carapace\Bucket;
@@ -45,6 +45,8 @@
 			new Monitor();
 			new Vault();
 			new PluginInterface();
+			new Interceptor();
+			new DataInterface();
 
 		}
 

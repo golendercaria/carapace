@@ -44,7 +44,15 @@
 
 
 
-		// methode de log
+		/**
+		* Permet d'enregistrer une opération sur la carapace
+		*
+		* Monitor::tracking_action_on_carapace("Message");
+		*
+		* @param string $message Message à logger
+		*
+		* @return void
+		 */
 		public static function tracking_action_on_carapace( string $message ) : void{
 
 			$current_user = wp_get_current_user();
@@ -70,6 +78,7 @@
 			}
 
 		}
+
 
 		public function log_read_bucket( $screen ){
 			if( $screen->id === 'bucket' && $screen->base === 'post'){

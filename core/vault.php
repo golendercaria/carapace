@@ -135,8 +135,8 @@
 		// }
 
 
-		public function unlock_vault_for_session()
-		{
+		public function unlock_vault_for_session(){
+			
 			if (isset($_POST['password']) ) {
 
 				$_SESSION["carapace_client_password"] = $_POST['password'];

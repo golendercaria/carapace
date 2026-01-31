@@ -2,8 +2,6 @@
 
 	namespace Carapace;
 
-	//use Carapace\Vault;
-
 
 	class PluginInterface{
 
@@ -12,10 +10,14 @@
 		public function __construct(){
 
 			add_action( 'admin_menu', array($this, 'add_carapace_menu') );
+			add_action('admin_post_carapace_save_settings', 'carapace_save_settings');
 			
 			wp_enqueue_style('carapace-admin-style',plugin_dir_url(__FILE__) . 'css/admin.css',	array(),'1.0','all');
-
-			add_action('admin_post_carapace_save_settings', 'carapace_save_settings');
+			wp_enqueue_script('carapace-admin-js',plugin_dir_url(__FILE__) . 'js/admin.js',array(),'1.0',true);
+			
+			wp_localize_script('carapace-admin-js', 'carapace_js_data', array(
+				'ajax_URL' => admin_url('admin-ajax.php')
+			));
 		}
 
 		public function add_carapace_menu() {
@@ -80,19 +82,19 @@
 			<div class="configuration">
 				<div class="config">
 					<h3>Emplacement du coffre fort</h3>
-					<input type="text" value="<?php echo Vault::get_vault_path(); ?>" class="config_value" />
+					<input type="text" value="<?php echo Vault::get_vault_path(); ?>" class="config_value" readonly />
 				</div>
 				<div class="config">
 					<h3>Délai de vérouillage automatique du coffre fort</h3>
-					<input type="text" value="<?php echo Vault::get_automatic_lock_vault_delay(); ?>" class="config_value" />
+					<input type="text" value="<?php echo Vault::get_automatic_lock_vault_delay(); ?>" class="config_value" readonly />
 				</div>
 				<div class="config">
 					<h3>Clé asymétrique</h3>
-					<textarea class="config_value"><?php echo Client::get_public_key(); ?></textarea>
+					<textarea class="config_value" readonly><?php echo Client::get_public_key(); ?></textarea>
 				</div>
 				<div class="config">
 					<h3>Clé privée chiffré</h3>
-					<textarea class="config_value"><?php echo Client::get_encrypted_private_key(); ?></textarea>
+					<textarea class="config_value" readonly><?php echo Client::get_encrypted_private_key(); ?></textarea>
 				</div>
 
 		

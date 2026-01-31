@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					action: 'carapace_lock_vault'
 				};
 
-				fetch(data_for_js.ajax_URL, {
+				fetch(carapace_js_data.ajax_URL, {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/x-www-form-urlencoded'
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					password: carapace_password
 				};
 
-				fetch(data_for_js.ajax_URL, {
+				fetch(carapace_js_data.ajax_URL, {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/x-www-form-urlencoded'

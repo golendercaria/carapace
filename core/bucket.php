@@ -24,11 +24,9 @@
 
 
 
-		static public function prepare_bucket() : bool
-		{
+		static public function prepare_bucket() : bool{
 
-			if( self::create_bucket() )
-			{
+			if( self::create_bucket() ){
 				return true;
 			}
 
@@ -40,8 +38,10 @@
 
 		static private function create_bucket() : bool {
 			
-			$filename = generate_unique_filename( self::get_vault_path() );
-			
+			$filename = generate_unique_filename( Vault::get_vault_path() );
+
+			// todo : add filter here
+
 			if( create_directory( $filename ) ){
 				self::$current_bucket_path = $filename;
 				return true;

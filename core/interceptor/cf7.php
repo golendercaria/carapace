@@ -5,20 +5,21 @@
 	use Carapace\Storage;
 
 	/*
-	 * Système qui permet d'intercepter les demandes emis depuis
-	 * les formulaires CF7 et de stocker les données de manière chiffré
+	 * Système qui permet d'intercepter les demandes emits depuis
+	 * les formulaires CF7 et de stocker les données de manière chiffrée
 	*/
 	class CF7Interceptor{
 
+
 		public $origin = 'CF7';
 
-		public function __construct()
-		{
+
+		public function __construct(){
 			add_action( 'wpcf7_before_send_mail', array( $this, 'intercept_cf7_form' ), 10, 2 );
 		}
 
-		public function intercept_cf7_form( $contact_form, $abort )
-		{
+
+		public function intercept_cf7_form( $contact_form, $abort ){
 
 			$submission = \WPCF7_Submission::get_instance();
 
@@ -33,12 +34,10 @@
 
 				// prepare data
 				$data = $this->prepare_data($tags_need_to_be_encrypt, $submission_data);
-				
-				//$this->generate_title( $contact_form, $submission_data );
+
 				Storage::store( array($this, 'generate_title'), $data, $this->origin );
 
 			}
-
 
 		}
 
@@ -65,6 +64,7 @@
 
 		}
 
+
 		// [textarea your-message encrypt]
 		public function find_encrypted_tag( &$contact_form ){
 			
@@ -85,13 +85,13 @@
 
 		}
 
-		public function generate_title()
-		{
+		public function generate_title() : string{
 			return sprintf("Soumission de %s depuis le formulaire de contact \"%s\"", Storage::$email, $this->contact_form->name() );
 		}
 
-		public function treat_file( $submission )
-		{
+
+		
+		public function treat_file( $submission ){
 
 			// récupération des fichiers
 			$files            = $submission->uploaded_files();

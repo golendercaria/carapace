@@ -15,14 +15,13 @@
 
 	class Interceptor{
 
-		public function __construct()
-		{
+		public function __construct(){
 
 			$this->load_interceptor();
 
 			//new ImageInterceptor();
 			new CF7Interceptor();
-			new ForminatorInterceptor();
+			//new ForminatorInterceptor();
 
 		}
 
@@ -31,7 +30,7 @@
 
 			//require_once 'interceptor/image.php';
 			require_once 'interceptor/cf7.php';
-			require_once 'interceptor/forminator.php';
+			//require_once 'interceptor/forminator.php';
 		
 		}
 

@@ -25,8 +25,7 @@
 		}
 
 
-		public function register_custom_post_type() : void
-		{
+		public function register_custom_post_type() : void{
 			
 			register_post_type( 'bucket', array(
 				'labels'              => array(
@@ -68,45 +67,6 @@
 		}
 
 
-		public static function register_data( string $title, $origin = null )
-		{
-
-			$post_data = array(
-				'post_title'   => $title,
-				'post_status'  => 'private',
-				'post_type'    => 'bucket'
-			);
-	
-
-			$post_id = wp_insert_post($post_data);
-
-    // if ( ! is_wp_error($post_id) ) {
-    //     // Ajouter un terme (ou plusieurs) à une taxonomie
-    //     wp_set_object_terms($post_id, 'mon-terme', 'bucket_category');
-    // }
-
-			if( $post_id ){
-				
-				add_post_meta($post_id, self::$data_bucket_path, Bucket::$current_bucket_path );
-				add_post_meta($post_id, self::$data_structure_meta_name, Storage::$data_structure_from_data );
-				add_post_meta($post_id, self::$data_shamail_meta_name, Storage::$shamail_from_data );
-
-				//pre( get_post_meta($post_id) );
-
-				if( $origin != null )
-				{
-					wp_set_object_terms( $post_id, $origin, 'origin' );
-				}
-
-			}else{
-
-				// gestion d'erreur
-				// - post type n'existe pas
-				// - titre absent
-				// - ..
-			}
-
-		}
 
 
 		public function meta_box_for_bucket( $screen ) : void

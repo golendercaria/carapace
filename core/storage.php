@@ -1,11 +1,6 @@
 <?php
 
 	/*
-	 * /-
-	 *  |-
-	 *  |
-	 *  |
-	 *  |
 	 * 
 	 * 
 	*/
@@ -42,13 +37,14 @@
 		public static $email					= null;
 
 
-		public static function store( string|callable $title, array $data, $origin = null )
-		{
+		public static function store( string|callable $title, array $data, $origin = null ){
 
+			// todo : add to documentation
+			//$data 	= apply_filters( 'carapace_modulate_data_for_submission', $data );
+			
 			Bucket::prepare_bucket();
 
 			self::prepare_meta_data( $data );
-
 
 			// préparation des data et convertion sous forme de chaine de caractère
 			if( isset($data["secure"]) && is_array( $data["secure"]) ){
@@ -81,7 +77,50 @@
 				$title = call_user_func( $title );
 			}
 			
-			DataInterface::register_data( $title, $origin );
+			// todo : add to documentation
+			//$title 	= apply_filters( 'carapace_modulate_title_for_submission', array($this, 'generate_title'), $data );
+
+			self::register_data( $title, $origin );
+
+		}
+
+
+
+		public static function register_data( string $title, $origin = null ){
+
+			$post_data = array(
+				'post_title'   => $title,
+				'post_status'  => 'private',
+				'post_type'    => 'bucket'
+			);
+	
+
+			$post_id = wp_insert_post($post_data);
+
+			// if ( ! is_wp_error($post_id) ) {
+			//     // Ajouter un terme (ou plusieurs) à une taxonomie
+			//     wp_set_object_terms($post_id, 'mon-terme', 'bucket_category');
+			// }
+
+			if( $post_id ){
+				
+				add_post_meta($post_id, DataInterface::$data_bucket_path, Bucket::$current_bucket_path );
+				add_post_meta($post_id, DataInterface::$data_structure_meta_name, Storage::$data_structure_from_data );
+				add_post_meta($post_id, DataInterface::$data_shamail_meta_name, Storage::$shamail_from_data );
+
+				//pre( get_post_meta($post_id) );
+
+				if( $origin != null ){
+					wp_set_object_terms( $post_id, $origin, 'origin' );
+				}
+
+			}else{
+
+				// gestion d'erreur
+				// - post type n'existe pas
+				// - titre absent
+				// - ..
+			}
 
 		}
 
@@ -97,8 +136,7 @@
 		 * 
 		 * 
 		*/ 
-		public static function storeImage( $upload )
-		{
+		public static function storeImage( $upload ){
 
 			Bucket::prepare_bucket();
 
@@ -147,9 +185,7 @@
 		}
 
 
-		private static function generate_password() : void
-		{
-			// utilisation de Wordpress
+		private static function generate_password() : void{
 			self::$aes_password = wp_generate_password(32, true, false);
 		}
 
@@ -169,8 +205,7 @@
 		/*
 		 * Chiffrement des données en AES256
 		*/
-		private static function encrypt_data( string $base64_data ) : void
-		{
+		private static function encrypt_data( string $base64_data ) : void{
 
 			$encrypted_data = crypto_helper::symetric_encrypt($base64_data, self::$aes_password);
 
@@ -321,13 +356,23 @@
 	
 					$password 	= file_get_contents($password_file_path);
 
-					// decrypt password
-					$decrypted_password = crypto_helper::asymetric_decrypt( $password, $_SESSION["carapace_rsa_key"]);
-					
-					// decrypted data
-					$decrypted_data = crypto_helper::symetric_decrypt($data["secure"], $decrypted_password);
+					try {
+						// code
+						$decrypted_password = crypto_helper::asymetric_decrypt( $password, $_SESSION["carapace_rsa_key"]);
+					} catch (\Exception $e) {
+						echo $e->getMessage();
+					}
 
-					$data["secure"] = json_decode( base64_decode($decrypted_data), true );
+					if( isset($decrypted_password) && $decrypted_password !== null && $decrypted_password != "" ){						
+						// decrypted data
+						try {
+							$decrypted_data = crypto_helper::symetric_decrypt($data["secure"], $decrypted_password);
+							$data["secure"] = json_decode( base64_decode($decrypted_data), true );
+						} catch (\Exception $e) {
+							echo $e->getMessage();
+						}
+					}
+
 				}
 			}
 

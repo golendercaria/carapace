@@ -2,26 +2,9 @@
 
 use Carapace\Bucket;
 use Carapace\Client;
+use Carapace\Vault;
 
-wp_enqueue_style(
-	'carapace-admin-style',
-	plugin_dir_url(__FILE__) . 'css/admin.css',
-	array(),
-	'1.0',
-	'all'
-);
 
-wp_enqueue_script(
-	'carapace-admin-js',
-	plugin_dir_url(__FILE__) . 'js/admin.js',
-	array(),
-	'1.0',
-	true
-);
-
-wp_localize_script('carapace-admin-js', 'data_for_js', array(
-	'ajax_URL' => admin_url('admin-ajax.php')
-));
 
 add_action( 'wp_head', 'style_message_plugin' );
 function style_message_plugin() {
@@ -53,25 +36,37 @@ function mon_plugin_menu() {
 // Fonction pour afficher la page d'options
 function mon_plugin_page_options() {
 
-	if ( ! current_user_can( 'manage_options' ) ) 
-	{
+	if ( ! current_user_can( 'manage_options' ) ){
 		return;
 	}
 
+	if( isset($_POST["init-carapace"]) ){
+		
+		$carapace_password = Carapace\Vault::init_carapace();
+		
+		?>
+		<h1>Initialisation de la carapace</h1>
+		<p>Veuillez enregistrer ce code et le conserver précieusement ! Ne le communiquer à personne. Ne l'utiliser que le votre site Wordpress dans le champ "dévérouiller la carapace".</p>
+		<div style="background-color:#00a3ff; color:white; width:100%; height:300px; font-size:30px; display:flex; align-items: center; justify-content: center;"><?php echo Carapace\Vault::$carapace_password; ?></div>
+		<?php
+
+	}
+
 	// Enregistrer les options
-	if ( isset( $_POST[ Carapace\Bucket::$vault_path_meta_name ] ) ) 
-	{
+	if ( isset( $_POST[ Carapace\Bucket::$vault_path_meta_name ] ) ){
 		update_option( Carapace\Bucket::$vault_path_meta_name , sanitize_text_field( $_POST[ Carapace\Bucket::$vault_path_meta_name ] ) );
 		echo '<div class="updated"><p>Les paramètres ont été sauvegardés !</p></div>';
 	}
 
 	// Enregistrer les options
-	if ( isset( $_POST["rsa_password"]) ) 
-	{
+	if ( isset( $_POST["rsa_password"]) ){
 
 		Carapace\Client::init_client($_POST["rsa_password"]);
 
 	}
+
+
+	pre($_SESSION);
 
 	?>
 	<div class="wrap">
@@ -87,11 +82,9 @@ function mon_plugin_page_options() {
 					</td>
 				</tr>
 			</table>
-			<?php submit_button( 'Sauvegarder les paramètres' ); ?>
-		</form>
+			
 
-		<h1>Initialiser le client</h1>
-		<form method="post" action="">
+
 			<table class="form-table">
 				<tr>
 					<th scope="row"><label for="p">Mot de passe</label></th>
@@ -107,18 +100,13 @@ function mon_plugin_page_options() {
 				</tr>
 			</table>
 			mdp de test : yannVang_securitykeyEn32Octetsvp
-			<?php submit_button( 'Générer la clé' ); ?>
+
+			<?php submit_button( 'Initialiser la carapace', 'primary', 'init-carapace' ); ?>
 		</form>
 
 		<h1>Debug</h1>
 
 		<div>
-			<h2>clé publique :</h2>
-			<textarea cols="50" rows="10"><?php echo get_option( Carapace\Client::$rsa_public_option_name ); ?></textarea>
-
-			<h2>clé privé crypté :</h2>
-			<textarea cols="50" rows="10"><?php echo get_option( Carapace\Client::$rsa_private_option_name ); ?></textarea>
-		
 			<h2>Etat du bucket</h2>
 			<?php
 				$vault_path = Carapace\Bucket::get_vault_path();
@@ -128,6 +116,14 @@ function mon_plugin_page_options() {
 					echo "Le vault n'existe pas !";
 				}
 			?>
+
+			<h2>clé publique :</h2>
+			<textarea cols="50" rows="10"><?php echo get_option( Carapace\Client::$rsa_public_option_name ); ?></textarea>
+
+			<h2>clé privé crypté :</h2>
+			<textarea cols="50" rows="10"><?php echo get_option( Carapace\Client::$rsa_private_option_name ); ?></textarea>
+		
+			<?php submit_button( 'Générer la clé' ); ?>
 		</div>
 
 
