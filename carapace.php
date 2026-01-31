@@ -3,9 +3,9 @@
 	/*
 	Plugin Name: Carapace
 	Plugin URI: https://plugins.nouslesdevs.com
-	Description: Un plugin générique de secu pour wordpress
+	Description: Un plugin qui permet de chiffrer des données de plugin de formulaire en AES-256
 	Version: 1.0
-	Author: Votre Nom
+	Author: Golendercaria
 	Author URI: https://nouslesdevs.com
 	License: GPL2
 	*/
