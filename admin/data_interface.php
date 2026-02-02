@@ -85,7 +85,7 @@
 			// ajout des meta box
 			add_meta_box(
 				'carapace_bucket_data',
-				'Données principale',
+				'Données',
 				array($this, 'display_bucket_data'),
 				$screen
 			);
@@ -107,43 +107,62 @@
 
 			if( !empty($data_structure["no_secure"]) ){
 				$no_secure_data = json_decode($data["no_secure"], true);
-				$this->display_data($data_structure["no_secure"], $no_secure_data);
+				$this->display_data("no_secure", $data_structure, $no_secure_data);
 			}
 
 			if( !empty($data_structure["secure"]) ){
-				$this->display_data($data_structure["secure"], $data["secure"]);
+				$this->display_data("secure", $data_structure, $data["secure"]);
 			}
 
 		}
 
 
-		public function display_data( array $structure, $data ){
+		public function display_data( string $type, array $structure, $data ){
 	
-			if( !empty($structure) ){
+			if( !empty($structure[ $type ]) ){
+
 				?>
-				<table class="data-group">
+				<div class="carapace_data">
 					<?php
-						foreach($structure as $key ){
+						if( $type === "no_secure" ){
+							?>
+							<div class="title">
+								<div class="ico">
+									<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-lock"><rect width="8" height="5" x="14" y="17" rx="1"></rect><path d="M10 20H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v2.5"></path><path d="M20 17v-2a2 2 0 1 0-4 0v2"></path></svg>
+								</div>
+								<h3>Donnés privées</h3>
+								<p>Informations accéssibles via un accès Wordpress</p>
+							</div>
+							<?php
+						}elseif( $type === "secure" ){
+							?>
+							<div class="title">
+								<div class="ico">
+									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-key-round absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"></path><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle></svg>
+								</div>
+								<h3>Donnés chiffrées</h3>
+								<p>Informations accéssibles via un accès Wordpress et une clé de déchiffrement</p>
+							</div>
+							<?php
+						}
+
+						foreach($structure[ $type ] as $key ){
 
 							if( isset($data[$key]) ){
 								?>
-								<tr>
-									<th><?php echo esc_html( $key ); ?></th>
-									<td><?php echo esc_html( $data[$key] ); ?></td>
-								</tr>
+								<label><?php echo esc_html( $key ); ?></label>
+								<input type="text" value="<?php echo esc_html( $data[$key] ); ?>" readonly />
 								<?php
 							}else{
 								?>
-								<tr>
-									<th><?php echo esc_html( $key ); ?></th>
-									<td class="crypted_data">&nbsp;</td>
-								</tr>
+								<label><?php echo esc_html( $key ); ?></label>
+								<input type="text" value="••••••••••••••••••••••••••••••••" readonly class="crypted" />
 								<?php
 							}
 
 						}
 					?>
-				</table>
+				</div>
 				<?php
 			}
 		}

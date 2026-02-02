@@ -52,18 +52,100 @@
 }
 
 
-#carapace_bucket_data .crypted_data{
-	background: black;
-	color: black;
-	width: 150px;
-	height: 20px;
+
+/* *** Données affiché dans le post type *** */
+[id^=carapace].postbox{
+	border: 0;
+	background: transparent;
+}
+[id^=carapace].postbox .postbox-header{
+	display: none;
+}
+[id^=carapace].postbox .inside{
+	margin: 0 !important;
+	border: 0 !important;
+	padding: 0;
+	background: transparent;
+	border: none;
+
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 30px;
+	align-items: start;
+}
+[id^=carapace].postbox .carapace_data{
+	background: white;
+	border-radius: 10px;
+	border: 1px solid rgba(232, 48, 140, 1);
+	transition: border-color 0.3s;
+	padding: 20px;
+	color: rgb(42,42,42);
+}
+[id^=carapace].postbox .carapace_data + .carapace_data{
+
+}
+[id^=carapace].postbox .carapace_data .title{
+	position: relative;
+	padding-left: 75px;
+	margin-bottom: 20px;
+}
+[id^=carapace].postbox .carapace_data .title .ico{
+	position: absolute;
+	left: 0;
+	top: 0;
+	background: rgba(232, 48, 140, 0.2);
+	display: inline-block;
+	width: 55px;
+	height: 55px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 10px;
+	color: rgba(232, 48, 140, 1);
+}
+[id^=carapace].postbox .carapace_data h3{
+	margin: 0;
+	font-size: 24px;
+	color:rgb(42,42,42);
+}
+[id^=carapace].postbox .carapace_data p{
+	margin: 0 0 0 0;
+	font-size: 16px;
+	color:rgb(42,42,42,0.5);
+}
+[id^=carapace].postbox .carapace_data label{
+	display: block;
+	font-size: 13px;
+	text-transform: uppercase;
+	color:rgb(42,42,42,0.6);
+	margin-top: 15px;
+	margin-bottom: 5px;
+}
+[id^=carapace].postbox .carapace_data input{
+	display: block;
+	font-size: 16px;
+	color:rgb(42,42,42,0.75);
+	width: 100%;
+	border-radius: 20px;
+	padding: 10px 20px;
+	outline: none;
+	box-shadow: none;
+	background: rgb(42,42,42,0.05);
+	border: 1px solid rgb(42,42,42,0.1);
 }
 
 
-
-
+/* *** PAGE ADMIN *** */
+body.toplevel_page_carapace{
+	background: white;
+}
 #carapace_wrapper{
 
+}
+#carapace_wrapper h1{
+	font-size: 52px;
+	font-weight: 600;
+	color: rgba(42,42,42);
 }
 #carapace_wrapper h2{
 	font-size: 28px;
@@ -101,9 +183,9 @@
 }
 #carapace_wrapper .for-submit{
 	text-decoration: none;
-	background: rgb(255, 237, 240);
-	border: 2px solid rgb(255, 136, 156);
-	color: rgb(255, 91, 118);
+	background: rgba(232, 48, 140, 0.025);
+	border: 2px solid rgba(232, 48, 140, 1);
+	color: rgba(232, 48, 140, 1);
 	border-radius: 15px;
 	padding: 20px 30px;
 	display: flex;
@@ -115,10 +197,11 @@
 	cursor: pointer;
 }
 #carapace_wrapper .for-submit:hover{
-	background: rgb(255, 217, 223);
+	background: rgba(232, 48, 140, 1);
+	color: white;
 }
 #carapace_wrapper .for-submit:hover svg{
-	fill: rgb(255, 151, 169);
+	/*fill: rgba(232, 48, 140, 1);*/
 }
 #carapace_wrapper .for-submit svg{
 	margin-right: 10px;
@@ -154,7 +237,8 @@
 	border-radius: 10px;
 	align-items: center;
 	justify-content: center;
-	background: pink;
+	background: rgba(232, 48, 140, 1);
+	color: white;
 	font-size: 16px;
 	font-weight: 500;
 }
@@ -166,11 +250,15 @@
 	font-size: 16px;
 }
 #carapace-configuration-form .field{
-	background: rgb(255, 237, 240);
-	border: 2px solid rgb(255, 118, 141);
+	background: rgb(42, 42, 42, 0.025);
+	border: 1px solid rgb(42, 42, 42, 0.1);
 	padding: 40px;
 	border-radius: 15px;
 	margin-top: 10px;
+	transition: box-shadow 0.5s;
+}
+#carapace-configuration-form .field:hover{
+	box-shadow: 0 0 20px 0px rgba(232, 48, 140, 0.3);
 }
 #carapace-configuration-form .field label{
 	font-size: 16px;
@@ -185,12 +273,13 @@
 	opacity: 0.8;
 }
 #carapace-configuration-form .field .wrapper-input{
-	border: 1px solid rgb(254, 161, 177);
+	border: 2px solid rgb(42, 42, 42, 0.1);
 	border-radius: 10px;
 	padding: 10px;
 	display: flex;
-	background: rgb(255, 209, 216);
+	background: rgba(42, 42, 42, 0.025);
 	align-items: center;
+	transition: border-color 0.3s;
 }
 #carapace-configuration-form .field .wrapper-input input{
 	width: 100%;
@@ -200,6 +289,9 @@
 	outline: none;
 	box-shadow: none;
 	font-size: 18px;
+}
+#carapace-configuration-form .field .wrapper-input:has(input:focus){
+	border-color: rgba(232, 48, 140, 1);
 }
 #carapace-configuration-form .step[data-value="3"] .wrapper-input{
 	display: grid;
@@ -220,10 +312,14 @@
 	border:2px solid transparent;
 	border-radius: 10px;
 	margin: 0;
-	background: rgb(255, 228, 232);
+	background: rgba(42, 42, 42, 0.025);
+	border: 2px solid rgba(42,42,24,0.1);
 	padding: 20px;
 	position: relative;
 	cursor: pointer;
+}
+#carapace-configuration-form .step[data-value="3"] label svg{
+	color: rgba(42,42,42);
 }
 #carapace-configuration-form .step[data-value="3"] label .description{
 	position: relative;
@@ -241,15 +337,18 @@
 	font-size: 18px;
 }
 #carapace-configuration-form .step[data-value="3"] label .description p + p{
-	color: rgb(255, 118, 141);
+	color: rgba(232, 48, 140, 1);
 	font-size: 14px;
 }
 #carapace-configuration-form .step[data-value="3"] label:has(input:checked) {
-	background: rgb(254, 161, 177);
-	border: 2px solid rgb(255, 136, 156);
+	background: rgba(232, 48, 140, 1);
+	border: 2px solid rgba(232, 48, 140, 0.1);
 	color: white;
 }
-#carapace-configuration-form .step[data-value="3"] label:has(input:checked) p + p{
+#carapace-configuration-form .step[data-value="3"] label:has(input:checked) svg{
+	color: white;
+}
+#carapace-configuration-form .step[data-value="3"] label:has(input:checked) p{
 	color: white;
 }
 
