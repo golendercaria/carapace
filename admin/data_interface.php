@@ -91,7 +91,7 @@
 			);
 
 			add_meta_box(
-				'bucket_meta_data',
+				'carapace_bucket_metadata',
 				'Meta données du bucket',
 				array($this, 'display_bucket_meta_data'),
 				$screen
@@ -175,20 +175,30 @@
 			$shamail 		= get_post_meta(self::$current_bucket_ID, self::$data_shamail_meta_name, true );
 
 			?>
-			<table class="acf-table" style="text-align:left;">
-				<tr>
-					<th class="acf-th">Bucket Path</th>
-					<td><?php echo $bucket_path ?></td>
-				</tr>
-				<tr>
-					<th class="acf-th">Structure de données</th>
-					<td><?php pre($data_structure); ?></td>
-				</tr>
-				<tr>
-					<th class="acf-th">Email (sha256)</th>
-					<td><?php echo $shamail ?></td>
-				</tr>
-			</table>
+			<div class="carapace_data">
+				<div class="title">
+					<div class="ico">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-database"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5V19A9 3 0 0 0 21 19V5"></path><path d="M3 12A9 3 0 0 0 21 12"></path></svg></div>
+					<h3>Métadonnées du Bucket</h3>
+					<p>Informations techniques sur le stockage sécurisé</p>
+				</div>
+
+				<label>Bucket Path</label>
+				<input type="text" value="<?php echo esc_html( $bucket_path ); ?>" readonly />
+				
+				<label>Type de chiffrement</label>
+				<input type="text" value="<?php echo esc_html( crypto_helper::$symetric_cypher ); ?>" readonly />
+
+				<?php
+					if( $shamail && $shamail != "" ){
+						?>
+						<label>Email (sha256)</label>
+						<input type="text" value="<?php echo esc_html( $shamail ); ?>" readonly />
+						<?php
+					}
+				?>
+
+			</div>
 			<?php
 		}
 

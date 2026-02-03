@@ -57,6 +57,7 @@
 [id^=carapace].postbox{
 	border: 0;
 	background: transparent;
+	box-shadow: none;
 }
 [id^=carapace].postbox .postbox-header{
 	display: none;
