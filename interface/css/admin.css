@@ -74,7 +74,7 @@
 	gap: 30px;
 	align-items: start;
 }
-[id^=carapace].postbox .carapace_data{
+[id^=carapace].postbox .carapace_data, #carapace_wrapper .config{
 	background: white;
 	border-radius: 10px;
 	border: 1px solid rgba(232, 48, 140, 1);
@@ -82,15 +82,12 @@
 	padding: 20px;
 	color: rgb(42,42,42);
 }
-[id^=carapace].postbox .carapace_data + .carapace_data{
-
-}
-[id^=carapace].postbox .carapace_data .title{
+[id^=carapace].postbox .carapace_data .title, #carapace_wrapper .config .title{
 	position: relative;
 	padding-left: 75px;
 	margin-bottom: 20px;
 }
-[id^=carapace].postbox .carapace_data .title .ico{
+[id^=carapace].postbox .carapace_data .title .ico, #carapace_wrapper .config .title .ico{
 	position: absolute;
 	left: 0;
 	top: 0;
@@ -104,17 +101,18 @@
 	border-radius: 10px;
 	color: rgba(232, 48, 140, 1);
 }
-[id^=carapace].postbox .carapace_data h3{
+[id^=carapace].postbox .carapace_data h3, #carapace_wrapper .config h3{
 	margin: 0;
 	font-size: 24px;
+	line-height: 1.4;
 	color:rgb(42,42,42);
 }
-[id^=carapace].postbox .carapace_data p{
+[id^=carapace].postbox .carapace_data p, #carapace_wrapper .config p{
 	margin: 0 0 0 0;
 	font-size: 16px;
 	color:rgb(42,42,42,0.5);
 }
-[id^=carapace].postbox .carapace_data label{
+[id^=carapace].postbox .carapace_data label, #carapace_wrapper .config label{
 	display: block;
 	font-size: 13px;
 	text-transform: uppercase;
@@ -122,7 +120,7 @@
 	margin-top: 15px;
 	margin-bottom: 5px;
 }
-[id^=carapace].postbox .carapace_data input{
+[id^=carapace].postbox .carapace_data input, #carapace_wrapper .config input{
 	display: block;
 	font-size: 16px;
 	color:rgb(42,42,42,0.75);
@@ -134,9 +132,24 @@
 	background: rgb(42,42,42,0.05);
 	border: 1px solid rgb(42,42,42,0.1);
 }
+[id^=carapace].postbox .carapace_data textarea, #carapace_wrapper .config textarea{
+	display: block;
+	font-size: 16px;
+	color:rgb(42,42,42,0.75);
+	width: 100%;
+	border-radius: 20px;
+	padding: 10px 20px;
+	outline: none;
+	box-shadow: none;
+	background: rgb(42,42,42,0.05);
+	border: 1px solid rgb(42,42,42,0.1);
+	min-height: 100px;
+}
 
 
 /* *** PAGE ADMIN *** */
+
+/* *** PAGE ADMIN - générale *** */
 body.toplevel_page_carapace{
 	background: white;
 }
@@ -152,9 +165,7 @@ body.toplevel_page_carapace{
 	font-size: 28px;
 	margin-bottom: 10px;
 }
-#carapace_wrapper h3{
-	font-size: 26px;
-}
+
 
 #carapace_wrapper .center{
 	text-align: center;
@@ -165,6 +176,9 @@ body.toplevel_page_carapace{
 	grid-template-columns: repeat(2, 1fr);
 	gap: 20px;
 }
+
+
+/*
 #carapace_wrapper .config textarea{
 	height: 200px;
 	width: 100%;
@@ -172,13 +186,13 @@ body.toplevel_page_carapace{
 #carapace_wrapper .config .config_value{
 	max-width: 600px;
 	width: 100%;
-	background: rgb(255, 237, 240);
-	border: 2px solid rgb(255, 118, 141);
+	background: rgba(42, 42, 42, 0.025);
+	border: 1px solid rgba(42,42,24,0.1);
 	padding: 10px;
 	border-radius: 15px;
 	outline: none;
 	box-shadow: none;
-}
+}*/
 #carapace_wrapper .configuration .for-submit{
 	grid-column: 1 / -1;
 }

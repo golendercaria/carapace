@@ -81,20 +81,48 @@
 			<h2>Configuration cryptographique</h2>
 			<p>La carapace est initialisé.</p>
 			<div class="configuration">
+
 				<div class="config">
-					<h3>Emplacement du coffre fort</h3>
+					<div class="title">
+						<div class="ico">
+							<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-lock"><rect width="8" height="5" x="14" y="17" rx="1"></rect><path d="M10 20H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v2.5"></path><path d="M20 17v-2a2 2 0 1 0-4 0v2"></path></svg>
+						</div>
+						<h3>Emplacement du coffre fort</h3>
+						<p>Endroit de stockage des données chiffrées</p>
+					</div>
 					<input type="text" value="<?php echo Vault::get_vault_path(); ?>" class="config_value" readonly />
 				</div>
 				<div class="config">
-					<h3>Délai de vérouillage automatique du coffre fort</h3>
-					<input type="text" value="<?php echo Vault::get_automatic_lock_vault_delay(); ?>" class="config_value" readonly />
+					<div class="title">
+						<div class="ico">
+							<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-lock"><rect width="8" height="5" x="14" y="17" rx="1"></rect><path d="M10 20H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v2.5"></path><path d="M20 17v-2a2 2 0 1 0-4 0v2"></path></svg>
+						</div>
+						<h3>Délai de vérouillage</h3>
+						<p>Re-saisie du mot de passe après un certain temps</p>
+					</div>
+					<?php
+						$delay = Vault::get_automatic_lock_vault_delay();
+					?>
+					<input type="text" value="<?php if( $delay == 0){ echo 'jamais'; }else{ echo $delay; } ?>" class="config_value" readonly />
 				</div>
 				<div class="config">
-					<h3>Clé asymétrique</h3>
+					<div class="title">
+						<div class="ico">
+							<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-lock"><rect width="8" height="5" x="14" y="17" rx="1"></rect><path d="M10 20H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v2.5"></path><path d="M20 17v-2a2 2 0 1 0-4 0v2"></path></svg>
+						</div>
+						<h3>Clé asymétrique</h3>
+						<p>Clé publique utilisé par le système pour chiffrer les clés symétriques</p>
+					</div>
 					<textarea class="config_value" readonly><?php echo Client::get_public_key(); ?></textarea>
 				</div>
 				<div class="config">
-					<h3>Clé privée chiffré</h3>
+					<div class="title">
+						<div class="ico">
+							<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-lock"><rect width="8" height="5" x="14" y="17" rx="1"></rect><path d="M10 20H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v2.5"></path><path d="M20 17v-2a2 2 0 1 0-4 0v2"></path></svg>
+						</div>
+						<h3>Clé privée chiffré</h3>
+						<p>Aperçu de la clé privée chiffré servant à déchiffrer les clés symétriques</p>
+					</div>
 					<textarea class="config_value" readonly><?php echo Client::get_encrypted_private_key(); ?></textarea>
 				</div>
 
